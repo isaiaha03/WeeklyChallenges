@@ -10,12 +10,21 @@ namespace ChallengesWithTestsMark8
         {
             if (words == null || word == null) return false;
 
-            StringComparison comparisonType = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-            foreach (string w in words)
+            foreach (var w in words)
             {
-                if (w != null && string.Equals(w, word, comparisonType))
+                if (ignoreCase)
                 {
-                    return true;
+                    if (w != null && w.ToLower() == word.ToLower())
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (w == word)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -39,7 +48,33 @@ namespace ChallengesWithTestsMark8
         public int IndexOfLastUniqueLetter(string str)
         {
             if (string.IsNullOrEmpty(str)) return -1;
-            return str.IndexOf(str.Distinct().Reverse().FirstOrDefault(x => str.Count(y => y.Equals(x)) == 1));
+            int[] charCount = new int[256]; 
+            int[] charIndex = new int[256];
+
+            for (int i = 0; i < charIndex.Length; i++)
+            {
+                charIndex[i] = -1;
+            }
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                char c = str[i];
+                charCount[c]++;
+                charIndex[c] = i;
+            }
+
+            int lastIndex = -1;
+            for (int i = 0; i < charIndex.Length; i++)
+            {
+                if (charCount[i] == 1)
+                {
+                    if (charIndex[i] > lastIndex)
+                    {
+                        lastIndex = charIndex[i];
+                    }
+                }
+            }
+            return lastIndex;
         }
 
         public int MaxConsecutiveCount(int[] numbers)
@@ -75,8 +110,14 @@ namespace ChallengesWithTestsMark8
         {
             if (elements == null || n <= 0) return new double[] { };
 
-            var result = elements.Where((num, index) => (index + 1) % n == 0).ToArray();
-            return result;
+            List<double> result = new List<double>();
+
+            for (int i = n - 1; i < elements.Count; i += n)
+            {
+                result.Add(elements[i]);
+            }
+
+            return result.ToArray();
         }
     }
 }
