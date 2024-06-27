@@ -55,9 +55,34 @@ namespace ChallengesWithTestsMark8
         public string TurnWordsIntoSentence(string[] words)
         {
             if (words == null || words.Length == 0) return "";
-            var trimmedWords = words.Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
-            string result = string.Join(" ", trimmedWords);
-            if (!string.IsNullOrEmpty(result)) result += ".";
+
+            string result = "";
+            bool isLastWord = true;
+
+            foreach (var word in words)
+            {
+                if (word != null)
+                {
+                    string trimmedWord = word.Trim();
+                    if(!string.IsNullOrEmpty(trimmedWord))
+                    {
+                        if (!isLastWord)
+                        {
+                            result += " ";
+                        }
+                        else
+                        {
+                            isLastWord = false;
+                        }
+                        result += trimmedWord;
+                    }
+                }
+            }
+
+            if(!string.IsNullOrEmpty (result))
+            {
+                result += ".";
+            }
             return result;
         }
 
@@ -77,15 +102,12 @@ namespace ChallengesWithTestsMark8
         {
             if (nums == null || nums.Length == 0) return false;
             
-            HashSet<int> seenNumbers = new HashSet<int>();
-            foreach (int num in nums)
+            for (int i = 0; i < nums.Length - 1; i++)
             {
-                int complement = targetNumber - num;
-                if (seenNumbers.Contains(complement))
+                for (int j = i + 1; j < nums.Length; j++)
                 {
-                    return true;
+                    if (nums[i] + nums[j] == targetNumber) return true;
                 }
-                seenNumbers.Add(num);
             }
             return false;
         }
